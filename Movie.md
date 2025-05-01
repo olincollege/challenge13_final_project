@@ -1,38 +1,72 @@
----
-title: "Movie"
-output:
-  github_document:
-    toc: true
----
+Movie
+================
 
-```{r}
+``` r
 library(tidyverse)
+```
+
+    ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+    ## ✔ dplyr     1.1.4     ✔ readr     2.1.5
+    ## ✔ forcats   1.0.0     ✔ stringr   1.5.1
+    ## ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+    ## ✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+    ## ✔ purrr     1.0.2     
+    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ✖ dplyr::filter() masks stats::filter()
+    ## ✖ dplyr::lag()    masks stats::lag()
+    ## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+
+``` r
 library(ggplot2)
 library(readr)
 library(lubridate)
 library(ggrepel)
-
-
 ```
 
-```{r, results='hide'}
+``` r
 basics <- read_tsv("title.basics.tsv.gz",
                    na = "\\N",
                    progress = TRUE)
+```
 
+    ## Warning: One or more parsing issues, call `problems()` on your data frame for details,
+    ## e.g.:
+    ##   dat <- vroom(...)
+    ##   problems(dat)
+
+    ## Rows: 11621071 Columns: 9
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: "\t"
+    ## chr (5): tconst, titleType, primaryTitle, originalTitle, genres
+    ## dbl (4): isAdult, startYear, endYear, runtimeMinutes
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
 glimpse(basics)
 ```
 
-```{r,results='hide'}
+``` r
 ratings <- read_tsv("title.ratings.tsv.gz",
                     na = "\\N",
                     progress = TRUE)
+```
 
+    ## Rows: 1562853 Columns: 3
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: "\t"
+    ## chr (1): tconst
+    ## dbl (2): averageRating, numVotes
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
+``` r
 glimpse(ratings)
 ```
 
-```{r}
+``` r
 romance_movies <- basics %>%
   # Filter for movies that include Romance in genres
   filter(titleType == "movie",
@@ -47,7 +81,7 @@ romance_movies <- basics %>%
   mutate(decade = floor(startYear / 10) * 10)
 ```
 
-```{r}
+``` r
 # Get top movie per year with minimum vote threshold
 top_movies_yearly <- romance_movies %>%
   filter(titleType == "movie",
@@ -97,7 +131,14 @@ ggplot(top_movies_yearly, aes(x = startYear, y = averageRating)) +
   )
 ```
 
-```{r}
+    ## `geom_smooth()` using formula = 'y ~ x'
+
+    ## Warning: ggrepel: 39 unlabeled data points (too many overlaps). Consider
+    ## increasing max.overlaps
+
+![](Movie_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+``` r
 # First calculate the peak years
 peak_years <- romance_movies %>%
   filter(titleType == "movie") %>%
@@ -174,3 +215,13 @@ romance_movies %>%
     panel.spacing = unit(1, "lines")
   )
 ```
+
+    ## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
+    ## ℹ Please use `linewidth` instead.
+    ## This warning is displayed once every 8 hours.
+    ## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
+    ## generated.
+
+    ## `geom_smooth()` using formula = 'y ~ x'
+
+![](Movie_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
