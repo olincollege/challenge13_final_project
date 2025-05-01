@@ -4,7 +4,39 @@ output: html_document
 ---
 
 ```{r}
-glimpse()
+library(tidyverse)
+library(ggplot2)
+```
+```{r}
+basics <- read_tsv(
+  "title.basics.tsv.gz",
+  na = "\\N",
+  col_types = cols_only(  # Explicitly select columns
+    tconst = col_character(),
+    titleType = col_character(),
+    primaryTitle = col_character(),
+    originalTitle = col_character(),
+    isAdult = col_integer(),
+    startYear = col_character(),
+    endYear = col_character(),
+    runtimeMinutes = col_character(),
+    genres = col_character()
+  )
+) %>% 
+  mutate(
+    across(c(startYear, endYear, runtimeMinutes), ~ na_if(., "\\N")),
+    across(c(startYear, endYear, runtimeMinutes), as.numeric),
+    isAdult = as.logical(isAdult)
+  ) %>% 
+  filter(!is.na(tconst))  # Remove any completely invalid rows
+
+glimpse(basics)
 ```
 
-test
+
+```{r}
+```
+
+
+```{r}
+
