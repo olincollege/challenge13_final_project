@@ -1,19 +1,26 @@
 ---
-title: "Movie"
+title: "Romance Movies"
 output:
   github_document:
     toc: true
 ---
 
+## **How have romance movies’ average ratings and vote counts changed over time, and which movie had the highest rating in each year?**
+
 ```{r}
 library(tidyverse)
 library(ggplot2)
 library(readr)
-library(lubridate)
 library(ggrepel)
-
-
 ```
+
+### **What data did you find to help answer that question?**
+
+The IMDB data is from their Non-Commercial Data Set collection. This contains several data sets with information such as movie title, release date, genre, rating, actor biographical information, and more. This data collection is very intensive, with over 11,000,000 entries, each representing different short films, movies, and show episodes. The data comes verbatim from IMDb, a reputable and very popular movie rating service. It is for these reasons that we decided to use this dataset for our project. In fact, there was initially too much useful data to include in our scope, which is why we focused on romance movies. In particular, we used the ‘title.basics’ data set, which contained the movie’s primary/original title, genre, duration type, runtime, year of release, and whether it was rated for adults. We also used the ‘title.ratings’ dataset which contained the number of votes and average rating for each movie. These datasets were merged using the movies’ IMDb ascribed alphanumeric identifiers to create a singular comprehensive dataset.
+
+### **What is the relevant background on your question?**
+
+The first romance movie on the dataset is 1894’s “Miss Jerry.” This inspired us to plot the ratings of all the romance movies over the 133 years represented in our data set. Within this time span, we decided to highlight when IMDb was established as a platform, as the rating counts would increase past this point as IMDb becomes an accessible service for newly released movies and their critics. Uncertainty in our model can come from this fact, in that there are less votes for older movies, creating a lesser confidence rating and negating titles that can otherwise be considered mainstream. We also made the choice to filter out all the movies that had less than 1,000 reviews, that way we could evaluate the mainstream movies we were targeting with our question.
 
 ```{r, results='hide'}
 basics <- read_tsv("title.basics.tsv.gz",
@@ -161,7 +168,7 @@ romance_movies %>%
   scale_color_manual(values = c("Average Votes" = "#1f77b4", 
                                "Average Rating (0-10)" = "#ff7f0e")) +
   labs(
-    title = "Romance Movie Trends with Peak Years Highlighted",
+    title = "Romance Movie Trends",
     subtitle = "Vertical lines show years with highest average votes and ratings",
     x = "Release Year",
     y = "",
@@ -174,3 +181,21 @@ romance_movies %>%
     panel.spacing = unit(1, "lines")
   )
 ```
+
+### **What level of (quantified) certainty do you have in your results?**
+
+We are confident that our top 10 movies are acceptable results, because we filtered films with less than 1,000 votes. Any movies missing from the IMDb database would be less popular movies, and thus would be irrelevant to our study anyways. This ensures we reduce the noise of films with fewer votes often have inflated ratings, our cutoff ensures the stability in our model. However, considering the fact that IMDb is the most comprehensive database of movies available, we cannot find a larger population to quantify uncertainty in our existing sample of movies. We compared our top movies from our figure to the current top ten romance movies listed in IMDB. We have an overlap of 5/10 movies in our visual, the reason for this is that all the films in the top 10 romance IMDB list are filtered differently and have at least 40 k votes.
+
+### **What conclusions did you come to?**
+
+We created two graphs: Romance Movie Trends and Highest-Rated Romance Movie of Each Year.
+
+The first one creates a visualization of two separate line graphs, pulling data from movies that have at least one of the genres filled as romance. The orange graph at the top focuses on the average rating for every movie and gives an average for all of the ones that came out in the same year. The blue graph on the bottom shows the average number of votes for each movie and complies all of the ones that came out in the same year.
+
+The second graph creates a visualization of a line chart plotting the highest rated romance movie that came out in a given year, filtered by titles that have over a thousand votes. The graph features dots that change saturation depending on the rating, and the dots’ size depends on how many votes a movie has.
+
+We discovered that the highest-rated mainstream romance movies have come out in the 2020s, with 2025 being the peak. This would mean that the best movies are coming out currently! We decided that it may not be the most accurate, as a small number of votes could oversaturate the rating, and so we graphed the highest rating for each movie per year over 1,000 votes. To answer our question, ‘How have romance movies’ average ratings and vote counts changed over time, and which movie had the highest rating in each year?’, romance movies have the highest average ratings that they’ve ever had, and IMDb votes jumped right after the site launched.
+
+### **What questions do you have remaining?**
+
+One question we have is how to quantitatively establish what films are ‘mainstream’. In this study, we just arbitrarily established movies with over 1,000 votes as mainstream, but perhaps there is a more precise and accurate way to quantify a mainstream movie. Further, while IMDb is the most comprehensive database of movies available to the public, there is the concept of ‘lost media’ that we cannot account for. There are movies and TV shows that existed but no longer have any physical record and thus cannot be represented in the IMDb dataset. Perhaps if we had a count of the lost media, we could create a confidence interval to account for this lack of data.
